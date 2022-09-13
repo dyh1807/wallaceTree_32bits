@@ -1,13 +1,15 @@
-// TODO: part3
 module wallaceTop (
-    input X[31:0],
-    input Y[31:0],
-    output R[63:0],
-    output Cout
+    input  [31:0]X,
+    input  [31:0]Y,
+    output [63:0]R,
+    output Cout_top
 );
 wire [31 : -1]      Y_input;
 wire [15 : 0]       c;
 wire [31 : 0]       P   [15 : 0];
+
+wire [63 : 0]       P_out[15 : 0];
+wire [15 : 0]       Cs;
 
 wire [14 : 0]       Cin [63 : 0];
 wire [14 : 0]       Cout [63 : 0];
@@ -18,145 +20,17 @@ assign              Y_input = {Y, 1'b0};
 // part 1: 16 wallacePart
 generate
     genvar j;
-    for (j = 0; j < 16; j++)
-    wallacePart u_wallacePart_j(
-        .y2(Y_input[2 * j + 1]), 
-        .y1(Y_input[2 * j]), 
-        .y0(Y_input[2 * j - 1]),
-        .x(X),
-        .P(P[j]), 
-        .c(c[j]),// TODO: check index usage
-    )
+    for (j = 0; j < 16; j = j + 1) begin
+        wallacePart u_wallacePart_j(
+            .y2(Y_input[2 * j + 1]), 
+            .y1(Y_input[2 * j]), 
+            .y0(Y_input[2 * j - 1]),
+            .x(X),
+            .P(P[j]), 
+            .c(c[j])
+        );
+    end
 endgenerate
-/*
-wallacePart u_wallacePart_0(
-    .y2(Y[1]),
-    .y1(Y[0]),
-    .y0(0),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_1(
-    .y2(Y[3]),
-    .y1(Y[2]),
-    .y0(Y[1]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_2(
-    .y2(Y[5]),
-    .y1(Y[4]),
-    .y0(Y[3]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_3(
-    .y2(Y[7]),
-    .y1(Y[6]),
-    .y0(Y[5]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_4(
-    .y2(Y[9]),
-    .y1(Y[8]),
-    .y0(Y[7]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_5(
-    .y2(Y[11]),
-    .y1(Y[10]),
-    .y0(Y[ 9]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_6(
-    .y2(Y[13]),
-    .y1(Y[12]),
-    .y0(Y[11]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_7(
-    .y2(Y[15]),
-    .y1(Y[14]),
-    .y0(Y[13]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_8(
-    .y2(Y[17]),
-    .y1(Y[16]),
-    .y0(Y[15]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_9(
-    .y2(Y[19]),
-    .y1(Y[18]),
-    .y0(Y[17]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_10(
-    .y2(Y[21]),
-    .y1(Y[20]),
-    .y0(Y[19]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_11(
-    .y2(Y[23]),
-    .y1(Y[22]),
-    .y0(Y[21]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_12(
-    .y2(Y[25]),
-    .y1(Y[24]),
-    .y0(Y[23]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_13(
-    .y2(Y[27]),
-    .y1(Y[26]),
-    .y0(Y[25]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_14(
-    .y2(Y[29]),
-    .y1(Y[28]),
-    .y0(Y[27]),
-    .x(X),
-    .P(),
-    .c()
-);
-wallacePart u_wallacePart_15(
-    .y2(Y[31]),
-    .y1(Y[30]),
-    .y0(Y[29]),
-    .x(X),
-    .P(),
-    .c()
-);*/
 // part 2: convert
 wallaceSwitch u_wallaceSwitch(
     .P0(P[0]), 
@@ -175,64 +49,63 @@ wallaceSwitch u_wallaceSwitch(
     .P13(P[13]),
     .P14(P[14]),
     .P15(P[15]),
-    .c0(c0),
-    .c1(c1),
-    .c2(c2),
-    .c3(c3),
-    .c4(c4),
-    .c5(c5),
-    .c6(c6),
-    .c7(c7),
-    .c8(c8),
-    .c9(c9),
-    .c10(c10),
-    .c11(c11),
-    .c12(c12),
-    .c13(c13),
-    .c14(c14),
-    .c15(c15),
-    .P_out_0(P_out_0), 
-    .P_out_1(P_out_1),
-    .P_out_2(P_out_2),
-    .P_out_3(P_out_3),
-    .P_out_4(P_out_4),
-    .P_out_5(P_out_5),
-    .P_out_6(P_out_6),
-    .P_out_7(P_out_7),
-    .P_out_8(P_out_8),
-    .P_out_9(P_out_9),
-    .P_out_10(P_out_10),
-    .P_out_11(P_out_11),
-    .P_out_12(P_out_12),
-    .P_out_13(P_out_13),
-    .P_out_14(P_out_14),
-    .P_out_15(P_out_15),
+    .c0(c[0]),
+    .c1(c[1]),
+    .c2(c[2]),
+    .c3(c[3]),
+    .c4(c[4]),
+    .c5(c[5]),
+    .c6(c[6]),
+    .c7(c[7]),
+    .c8(c[8]),
+    .c9(c[9]),
+    .c10(c[10]),
+    .c11(c[11]),
+    .c12(c[12]),
+    .c13(c[13]),
+    .c14(c[14]),
+    .c15(c[15]),
+    .P_out_0(P_out[0]), 
+    .P_out_1(P_out[1]),
+    .P_out_2(P_out[2]),
+    .P_out_3(P_out[3]),
+    .P_out_4(P_out[4]),
+    .P_out_5(P_out[5]),
+    .P_out_6(P_out[6]),
+    .P_out_7(P_out[7]),
+    .P_out_8(P_out[8]),
+    .P_out_9(P_out[9]),
+    .P_out_10(P_out[10]),
+    .P_out_11(P_out[11]),
+    .P_out_12(P_out[12]),
+    .P_out_13(P_out[13]),
+    .P_out_14(P_out[14]),
+    .P_out_15(P_out[15]),
     .Cs(Cs)
 );
 // part 3: 64 single wallace three tree 64  adder
 generate 
     wallaceBits u_wallaceBits_0 (
-        .P({P_out_15[0], P_out_14[0], P_out_13[0], P_out_12[0], P_out_11[0], P_out_10[0], P_out_9[0], P_out_8[0], P_out_7[0], P_out_6[0], P_out_5[0], P_out_4[0], P_out_3[0], P_out_2[0], P_out_1[0], P_out_0[0]}),
+        .P({P_out[15][0], P_out[14][0], P_out[13][0], P_out[12][0], P_out[11][0], P_out[10][0], P_out[9][0], P_out[8][0], P_out[7][0], P_out[6][0], P_out[5][0], P_out[4][0], P_out[3][0], P_out[2][0], P_out[1][0], P_out[0][0]}),
         .Cin(Cs[14 : 0]),
         .Cout(Cout[0]),
         .c(adder_left[1]),
-        .s(adder_right[0]),
-    )
+        .s(adder_right[0])
+    );
     genvar i;
-    // TODO: check
-    for (i = 1; i < 64; i++) begin
+    for (i = 1; i < 64; i = i + 1) begin
         wallaceBits u_wallaceBits_i (
-            .P({P_out_15[i], P_out_14[i], P_out_13[i], P_out_12[i], P_out_11[i], P_out_10[i], P_out_9[i], P_out_8[i], P_out_7[i], P_out_6[i], P_out_5[i], P_out_4[i], P_out_3[i], P_out_2[i], P_out_1[i], P_out_0[i]}),
-            .Cin(Cout_i-1),
-            .Cout(Cout_i),
+            .P({P_out[15][i], P_out[14][i], P_out[13][i], P_out[12][i], P_out[11][i], P_out[10][i], P_out[9][i], P_out[8][i], P_out[7][i], P_out[6][i], P_out[5][i], P_out[4][i], P_out[3][i], P_out[2][i], P_out[1][i], P_out[0][i]}),
+            .Cin(Cout[i - 1]),
+            .Cout(Cout[i]),
             .c(adder_left[i + 1]),
-            .s(adder_right[i]),
+            .s(adder_right[i])
         );
     end
 endgenerate
 // part 4: adder
 assign adder_left[0] = Cs[15];
-assign {R, Cout} = adder_left[63 : 0] + adder_right[63 : 0];
+assign {R, Cout_top} = adder_left[63 : 0] + adder_right[63 : 0];
         
 endmodule
 
@@ -254,7 +127,7 @@ wire            case2_valid;
 
 assign  P_case0     = 32'b0;
 assign  P_case1     = P;
-assign  P_case2     = (signed) P << 1'b1;
+assign  P_case2     = {P[31], P[29 : 0], 1'b0};
 assign  case0_valid = (y2 == y1) && (y1 == y0);
 assign  case1_valid = y2 != y0;
 assign  case2_valid = (y2 != y1) && (y1 == y0);
@@ -316,7 +189,7 @@ module wallaceSwitch(
     output [63: 0] P_out_13,
     output [63: 0] P_out_14,
     output [63: 0] P_out_15,
-    output [15: 0] Cs,
+    output [15: 0] Cs
 );
 assign P_out_0      = {{32{P0[31]}}, P0};
 assign P_out_1      = {{30{P1[31]}}, P1, {2'b0}};
@@ -344,7 +217,7 @@ module wallaceBits(
     input [14 : 0]  Cin,
     output[14 : 0]  Cout,
     output          c,
-    output          s,
+    output          s
 );
 // level 0
 fulladder u_inst0(.a(P[0]), .b(P[1]), .c_in(P[2]), .c_out(Cout[0]), .s(s_0));
@@ -375,7 +248,7 @@ module fulladder (
     input b,  
     input c_in,  
     output c_out,  
-    output s,
+    output s
 );  
    assign {c_out, s} = a + b + c_in;  
 endmodule 
