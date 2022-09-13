@@ -25,7 +25,7 @@ generate
             .y2(Y_input[2 * j + 1]), 
             .y1(Y_input[2 * j]), 
             .y0(Y_input[2 * j - 1]),
-            .x(X),
+            .X(X),
             .P(P[j]), 
             .c(c[j])
         );
@@ -105,7 +105,7 @@ generate
 endgenerate
 // part 4: adder
 assign adder_left[0] = Cs[15];
-assign {R, Cout_top} = adder_left[63 : 0] + adder_right[63 : 0];
+assign {Cout_top, R} = adder_left[63 : 0] + adder_right[63 : 0];
         
 endmodule
 
@@ -113,7 +113,7 @@ module wallacePart(
     input           y2  ,
     input           y1  ,
     input           y0  ,
-    input   [31: 0] x   ,
+    input   [31: 0] X   ,
     output  [31:0]  P   ,
     output c
 );
@@ -126,10 +126,10 @@ wire            case1_valid;
 wire            case2_valid;
 
 assign  P_case0     = 32'b0;
-assign  P_case1     = P;
-assign  P_case2     = {P[31], P[29 : 0], 1'b0};
+assign  P_case1     = X;
+assign  P_case2     = {X[31], X[29 : 0], 1'b0};
 assign  case0_valid = (y2 == y1) && (y1 == y0);
-assign  case1_valid = y2 != y0;
+assign  case1_valid = y1 != y0;
 assign  case2_valid = (y2 != y1) && (y1 == y0);
 
 assign  c           = y2;
@@ -192,21 +192,21 @@ module wallaceSwitch(
     output [15: 0] Cs
 );
 assign P_out_0      = {{32{P0[31]}}, P0};
-assign P_out_1      = {{30{P1[31]}}, P1, {2'b0}};
-assign P_out_2      = {{28{P2[31]}}, P2, {4'b0}};
-assign P_out_3      = {{26{P3[31]}}, P3, {6'b0}};
-assign P_out_4      = {{24{P4[31]}}, P4, {8'b0}};
-assign P_out_5      = {{22{P5[31]}}, P5, {10'b0}};
-assign P_out_6      = {{20{P6[31]}}, P6, {12'b0}};
-assign P_out_7      = {{18{P7[31]}}, P7, {14'b0}};
-assign P_out_8      = {{16{P8[31]}}, P8, {16'b0}};
-assign P_out_9      = {{14{P9[31]}}, P9, {18'b0}};
-assign P_out_10     = {{12{P10[31]}}, P10, {20'b0}};
-assign P_out_11     = {{10{P11[31]}}, P11, {22'b0}};
-assign P_out_12     = {{8{P12[31]}}, P12, {24'b0}};
-assign P_out_13     = {{6{P13[31]}}, P13, {26'b0}};
-assign P_out_14     = {{4{P14[31]}}, P14, {28'b0}};
-assign P_out_15     = {{2{P15[31]}}, P15, {30'b0}};
+assign P_out_1      = {{30{P1[31]}}, P1, {2{P1[31]}}};
+assign P_out_2      = {{28{P2[31]}}, P2, {4{P2[31]}}};
+assign P_out_3      = {{26{P3[31]}}, P3, {6{P3[31]}}};
+assign P_out_4      = {{24{P4[31]}}, P4, {8{P4[31]}}};
+assign P_out_5      = {{22{P5[31]}}, P5, {10{P5[31]}}};
+assign P_out_6      = {{20{P6[31]}}, P6, {12{P6[31]}}};
+assign P_out_7      = {{18{P7[31]}}, P7, {14{P7[31]}}};
+assign P_out_8      = {{16{P8[31]}}, P8, {16{P8[31]}}};
+assign P_out_9      = {{14{P9[31]}}, P9, {18{P9[31]}}};
+assign P_out_10     = {{12{P10[31]}}, P10, {20{P10[31]}}};
+assign P_out_11     = {{10{P11[31]}}, P11, {22{P11[31]}}};
+assign P_out_12     = {{8{P12[31]}}, P12, {24{P12[31]}}};
+assign P_out_13     = {{6{P13[31]}}, P13, {26{P13[31]}}};
+assign P_out_14     = {{4{P14[31]}}, P14, {28{P14[31]}}};
+assign P_out_15     = {{2{P15[31]}}, P15, {30{P15[31]}}};
 
 assign Cs           = {c15, c14, c13, c12, c11, c10, c9, c8, c7, c6, c5, c4, c3, c2, c1, c0};
 
@@ -225,7 +225,7 @@ fulladder u_inst1(.a(P[3]), .b(P[4]), .c_in(P[5]), .c_out(Cout[1]), .s(s_1));
 fulladder u_inst2(.a(P[6]), .b(P[7]), .c_in(P[8]), .c_out(Cout[2]), .s(s_2));
 fulladder u_inst3(.a(P[9]), .b(P[10]), .c_in(P[11]), .c_out(Cout[3]), .s(s_3));
 fulladder u_inst4(.a(P[12]), .b(P[13]), .c_in(P[14]), .c_out(Cout[4]), .s(s_4));
-fulladder u_inst5(.a(P[15]), .b(P[16]), .c_in(1'b0), .c_out(Cout[5]), .s(s_5));
+fulladder u_inst5(.a(P[15]), .b(1'b0), .c_in(1'b0), .c_out(Cout[5]), .s(s_5));
 // level 1
 fulladder u_inst6(.a(s_0), .b(s_1), .c_in(s_2), .c_out(Cout[6]), .s(s_6));
 fulladder u_inst7(.a(s_3), .b(s_4), .c_in(s_5), .c_out(Cout[7]), .s(s_7));
